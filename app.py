@@ -228,14 +228,12 @@ with ch2:
     st.plotly_chart(fig_ct, use_container_width=True)
 
 # ---------------- Detail Tables ----------------
-st.write("")
 st.subheader("Station Results (Baseline)")
 
 b_out = baseline_res["metrics"]["table"].copy()
 b_out["Availability (%)"] = (b_out["Availability"] * 100.0).round(1)
 b_out["Utilization (%)"] = (b_out["Utilization"] * 100.0).round(1)
 
-# Pull per-station CT from ct_pack table and store under a consistent name
 b_out["CT_station (min)"] = baseline_res["ct_pack"]["CT_by_station_min"]["CT_station_min"].round(3)
 
 baseline_cols = [
@@ -248,17 +246,34 @@ baseline_cols = [
     "CV",
     "CT_station (min)",
 ]
+baseline_cols = [c for c in baseline_cols if c in b_out.columns]
 
 st.dataframe(b_out[baseline_cols], use_container_width=True)
 
 
+
 st.subheader("Station Results (Scenario)")
+
 s_out = scenario_res["metrics"]["table"].copy()
 s_out["Availability (%)"] = (s_out["Availability"] * 100.0).round(1)
 s_out["Utilization (%)"] = (s_out["Utilization"] * 100.0).round(1)
+
+# Always create a consistent per-station CT column name for display
 s_out["CT_station (min)"] = scenario_res["ct_pack"]["CT_by_station_min"]["CT_station_min"].round(3)
 
-st.dataframe(
-    s_out[["Station", "Process Time (min/unit)", "Availability (%)", "PT_eff (min/unit)", "Capacity (uph)", "Utilization (%)", "CV", "CT_station_min"]],
-    use_container_width=True
-)
+scenario_cols = [
+    "Station",
+    "Process Time (min/unit)",
+    "Availability (%)",
+    "PT_eff (min/unit)",
+    "Capacity (uph)",
+    "Utilization (%)",
+    "CV",
+    "CT_station (min)",
+]
+
+# Bulletproof: only show columns that actually exist
+scenario_cols = [c for c in scenario_cols if c in s_out.columns]
+
+st.dataframe(s_out[scenario_cols], use_container_width=True)
+
