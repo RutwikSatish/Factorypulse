@@ -230,15 +230,27 @@ with ch2:
 # ---------------- Detail Tables ----------------
 st.write("")
 st.subheader("Station Results (Baseline)")
+
 b_out = baseline_res["metrics"]["table"].copy()
 b_out["Availability (%)"] = (b_out["Availability"] * 100.0).round(1)
 b_out["Utilization (%)"] = (b_out["Utilization"] * 100.0).round(1)
+
+# Pull per-station CT from ct_pack table and store under a consistent name
 b_out["CT_station (min)"] = baseline_res["ct_pack"]["CT_by_station_min"]["CT_station_min"].round(3)
 
-st.dataframe(
-    b_out[["Station", "Process Time (min/unit)", "Availability (%)", "PT_eff (min/unit)", "Capacity (uph)", "Utilization (%)", "CV", "CT_station_min"]],
-    use_container_width=True
-)
+baseline_cols = [
+    "Station",
+    "Process Time (min/unit)",
+    "Availability (%)",
+    "PT_eff (min/unit)",
+    "Capacity (uph)",
+    "Utilization (%)",
+    "CV",
+    "CT_station (min)",
+]
+
+st.dataframe(b_out[baseline_cols], use_container_width=True)
+
 
 st.subheader("Station Results (Scenario)")
 s_out = scenario_res["metrics"]["table"].copy()
